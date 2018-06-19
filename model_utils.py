@@ -11,6 +11,20 @@ import matplotlib.pyplot as plt
 
 
 def generate_models(trainArr, trainRes, testArr, class_weights, scorer = 'roc_auc'):
+    '''
+    Generate Random Forest, Logistic Regression, and Multilayer Perceptron models with and without nested cross-validation for parameter tuning.
+    Inputs:
+    - trainArr: training features
+    - trainRes: training labels
+    - testArr: testing features (only used for feature scaling, not model fitting)
+    - class_weights: the weights of each class
+    - scorer: scoring metric used for parameter tuning. Default: 'roc_auc'
+    
+    Outputs:
+    - models: dictionary with every stored model
+    - trainArr_s: scaled training features
+    - testArr_s: scaled testing features
+    '''
     models = {}
     ##### RANDOM FOREST
     rf = RandomForestClassifier(n_estimators=600, 
@@ -86,6 +100,14 @@ def generate_models(trainArr, trainRes, testArr, class_weights, scorer = 'roc_au
 
 
 def binary_metrics (labels, preds):
+    '''
+    Generates binary metrics given a set of labels and predictions.
+    Inputs:
+    - labels, preds
+    
+    Outputs:
+    - metrics: array detailing the accuracy, recall, precision, and F-1 score given the labels
+    '''
     preds = preds > 0.75
 
     tn, fp, fn, tp = confusion_matrix(labels, preds).ravel()
@@ -109,6 +131,17 @@ from sklearn.model_selection import StratifiedKFold
 
 
 def run_models (featArr, tss_label, num_folds = 10):
+    '''
+    Runs the specified models as called by generate_models function
+    Inputs:
+    - featArr: features
+    - tss_label: labels
+    - num_folds: number of cross-validation folds to use. Default: 10
+    
+    Outputs:
+    - plots for each fold, detailing the ROC-AUC curve for each model
+    - fold_results: dictionary containing the roc_auc score, other evaluation metrics, binary labels for each test case, and probabilities
+    '''
     
     unique, counts = np.unique(tss_label, return_counts=True)
     class_weights = {unique[i]:counts[i] for i in np.arange(0,len(counts),1)}

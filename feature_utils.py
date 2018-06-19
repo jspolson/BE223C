@@ -4,6 +4,9 @@ import numpy as np
 import itertools
 
 def bbox2_ND(img):
+    '''
+    Generates a three-dimensional bounding box given a 3D numpy array.
+    '''
     N = img.ndim
     out = []
     for ax in itertools.combinations(range(N), N - 1):
@@ -13,6 +16,18 @@ def bbox2_ND(img):
     return b
 
 def generate_features_noncluster(patients, raw_data, tmax_seg = np.arange(5,50,5), tmax_mod = 'TMAXs', proj_mod = ['preflair', 'dwi']):
+    '''
+    Generates features based on the noncluster method.
+    Inputs:
+    - patients: list of patient IDs
+    - raw_data: raw imaging data
+    - tmax_seg: the boundaries from which to generate segments from the tmax (or other specified) modality. Default: np.arange(5,50,5)
+    - tmax_mod: the imaging modality to segment. Default: 'TMAXs'
+    - proj_mod: the modalities to which the function applies the segmentation masks. Default: ['preflair', 'dwi']
+    
+    Outputs:
+    - featArr: a feature array for each patient. For each modality, and each segmentation, produces the sum (volume), mean, variance, minimum, maximum, centroid coordinates, and distance from total centroid.  
+    '''
     features = []
 
     for pt in patients:
@@ -101,7 +116,18 @@ def generate_features_noncluster(patients, raw_data, tmax_seg = np.arange(5,50,5
     return featArr
 
 def generate_features_cluster(patients, raw_data, tmax_seg = [4,8,10,50], tmax_mod = 'TMAXs', proj_mod = ['preflair', 'dwi'], n_clusters =100):
-
+    '''
+    Generates features based on the noncluster method.
+    Inputs:
+    - patients: list of patient IDs
+    - raw_data: raw imaging data
+    - tmax_seg: the boundaries from which to generate segments from the tmax (or other specified) modality. Default: [4,8,10,50]
+    - tmax_mod: the imaging modality to segment. Default: 'TMAXs'
+    - proj_mod: the modalities to which the function applies the segmentation masks. Default: ['preflair', 'dwi']
+    
+    Outputs:
+    - featArr: a feature array for each patient. For each modality, and each segmentation, produces the mean, variance, minimum, and maximum.  
+    '''
     features = []
 
     for pt in patients:
